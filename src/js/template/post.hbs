@@ -1,0 +1,33 @@
+{{#each posts}}
+  <li class="main-post" id="{{id}}">
+    <div class="main-top">
+      <div class="main-left">
+        <img class="main-avatar" src="{{avatar}}" alt="{{name}}" />
+        <div class="main-data">
+          <p class="main-nickname">{{name}}</p>
+          <p class="main-place">{{country}}</p>
+        </div>
+      </div>
+      <div class="main-right">
+        <p class="main-date">{{createdAt}}</p>
+        <button class="main-heart" checked="{{isLiked}}">
+          ♡
+        </button>
+      </div>
+    </div>
+    <div class="main-down">
+      <h2 class="main-subtitle">{{title}}</h2>
+      <p class="main-tag">{{tag}}</p>
+      <p class="main-text">
+        {{text}}
+      </p>
+      <div class="main-buttons">
+        <button class="main-btn go">Перейти</button>
+        <div class="main-wrapper">
+          <button class="main-btn update">Змінити</button>
+          <button class="main-btn delete">Видалити</button>
+        </div>
+      </div>
+    </div>
+  </li>
+{{/each}}
