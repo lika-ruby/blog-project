@@ -515,11 +515,16 @@ body {
 }
 
 .modal-btn {
+  display: none;
   margin-top: 32px;
   padding: 12px 36px;
   background-color: var(--accent-color);
   font-size: 20px;
   color: var(--light-text-color);
+}
+
+.login .modal-btn {
+  display: block;
 }
 
 .login #post-btn {
