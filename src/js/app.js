@@ -60,10 +60,10 @@ if (getFromLocalStorage(keyLogin) === true) {
 }
 
 
-mainListElem.addEventListener("click", (e) => {
+mainListElem.addEventListener("click", async (e) => {
     if (e.target.classList.contains("go")) {
         const itemElem = e.target.closest("li")
-        getPost(itemElem.id).then((post) => {
+        await getPost(itemElem.id).then((post) => {
             backdrop.innerHTML = renderPostModal(post)
             backdrop.id = post.id
         })
@@ -80,10 +80,10 @@ backdrop.addEventListener("click", (e) => {
     }
 });
 
-loadMoreBtn.addEventListener("click", () => {
+loadMoreBtn.addEventListener("click", async () => {
     page += 1
     setToLocalStorage(keyPage, page)
-    getPosts(page).then((posts) => {
+    await getPosts(page).then((posts) => {
         mainListElem.insertAdjacentHTML("beforeend", renderPosts(posts, postsListTemp))
     })
 })
@@ -100,7 +100,7 @@ loginOpenBtn.addEventListener("click", () => {
     bodyELem.classList.add("no-scroll")
 })
 
-backdrop.addEventListener("submit", (e) => {
+backdrop.addEventListener("submit", async (e) => {
     if (e.target.id === "regis-form") {
         e.preventDefault()
         const regisNick = document.querySelector("#regis-nick")
@@ -109,7 +109,7 @@ backdrop.addEventListener("submit", (e) => {
         const regisPassword = document.querySelector("#regis-password")
         const alertText = document.querySelector("#regis-alert")
         alertText.textContent = ""
-        getUsers().then((users) => {
+        await getUsers().then(async (users) => {
             for (const user of users) {
                 if (user.nickname === regisNick.value) {
                     alertText.textContent = "Такий нікнейм вже є..."
@@ -129,7 +129,7 @@ backdrop.addEventListener("submit", (e) => {
                             avatar: regisAvatar.value,
                             password: regisPassword.value,
                         }
-                        addObject("users", profile)
+                        await addObject("users", profile)
                         setToLocalStorage(keyIDProfile, user.id)
 
                         document.querySelector("#header-avatar").src = regisAvatar.value
@@ -141,14 +141,14 @@ backdrop.addEventListener("submit", (e) => {
     }
 })
 
-backdrop.addEventListener("submit", (e) => {
+backdrop.addEventListener("submit", async (e) => {
     if (e.target.id === "login-form") {
         e.preventDefault()
         const loginEmail = document.querySelector("#login-email")
         const loginPassword = document.querySelector("#login-password")
         const alertText = document.querySelector("#login-alert")
         alertText.textContent = ""
-        getUsers().then((users) => {
+        await getUsers().then((users) => {
             for (const user of users) {
                 if (user.email !== loginEmail.value) {
                     alertText.textContent = "Такої пошта немає..."
@@ -227,7 +227,7 @@ backdrop.addEventListener("submit", async (e) => {
     }
 })
 
-mainListElem.addEventListener("click", (e) => {
+mainListElem.addEventListener("click", async (e) => {
     if (e.target.classList.contains("update")) {
         backdrop.innerHTML = renderUpdateModal()
         const updateTitle = document.querySelector("#update-title")
@@ -235,7 +235,7 @@ mainListElem.addEventListener("click", (e) => {
         const updateTag = document.querySelector("#update-tag")
 
         for (let i = 0; i < page; i += 1) {
-            getPosts(i + 1).then((posts) => {
+            await getPosts(i + 1).then((posts) => {
                 for (const post of posts) {
                     if (e.target.closest("li").id === post.id) {
                         updateTitle.value = post.title
