@@ -171,11 +171,6 @@ body {
   font-size: 32px;
 }
 
-.main-place {
-  color: var(--dark-text-color);
-  font-size: 20px;
-}
-
 .main-right {
   align-items: center;
   gap: 32px;

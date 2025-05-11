@@ -828,30 +828,31 @@ backdrop.addEventListener("submit", async (e)=>{
         const addTitle = document.querySelector("#add-title");
         const addText = document.querySelector("#add-text");
         const addTag = document.querySelector("#add-tag");
-        await (0, _getUsersApi.getUsers)().then(async (users)=>{
-            for (const user of users){
-                const idUser = (0, _localHost.getFromLocalStorage)(keyIDProfile);
-                if (idUser === user.id) {
-                    backdrop.classList.add("is-hidden");
-                    bodyELem.classList.remove("no-scroll");
-                    backdrop.innerHTML = "";
-                    const post = {
-                        nickname: user.nickname,
-                        email: user.email,
-                        avatar: user.avatar,
-                        password: user.password,
-                        createdAt: new Date().toISOString(),
-                        title: addTitle.value,
-                        text: addText.value,
-                        tag: addTag.value,
-                        comments: []
-                    };
-                    await (0, _addObject.addObject)("posts", post);
-                    mainListElem.innerHTML = "";
-                    for(let i = 0; i < page; i += 1)await (0, _getPostsApi.getPosts)(i + 1).then(async (posts)=>{
-                        mainListElem.insertAdjacentHTML("beforeend", await (0, _renderPostsMarkup.renderPosts)(posts, (0, _postHbsDefault.default)));
-                    });
-                }
+        const idUser = (0, _localHost.getFromLocalStorage)(keyIDProfile);
+        console.log("1234567890");
+        await (0, _getUser.getUser)(idUser).then(async (user)=>{
+            console.log(user);
+            if (idUser === user.id) {
+                backdrop.classList.add("is-hidden");
+                bodyELem.classList.remove("no-scroll");
+                backdrop.innerHTML = "";
+                const post = {
+                    name: user.nickname,
+                    email: user.email,
+                    avatar: user.avatar,
+                    password: user.password,
+                    createdAt: new Date().toISOString(),
+                    title: addTitle.value,
+                    text: addText.value,
+                    tag: addTag.value,
+                    comments: []
+                };
+                console.log(post);
+                await (0, _addObject.addObject)("posts", post);
+                mainListElem.innerHTML = "";
+                for(let i = 0; i < page; i += 1)await (0, _getPostsApi.getPosts)(i + 1).then(async (posts)=>{
+                    mainListElem.insertAdjacentHTML("beforeend", await (0, _renderPostsMarkup.renderPosts)(posts, (0, _postHbsDefault.default)));
+                });
             }
         });
     }
@@ -880,25 +881,29 @@ backdrop.addEventListener("submit", async (e)=>{
         const updateTitle = document.querySelector("#update-title");
         const updateText = document.querySelector("#update-text");
         const updateTag = document.querySelector("#update-tag");
-        for(let i = 0; i < page; i += 1)await (0, _getPostsApi.getPosts)(i + 1).then(async (posts)=>{
-            for (const post of posts){
-                const idPost = backdrop.id;
-                if (idPost === post.id) {
-                    backdrop.classList.add("is-hidden");
-                    bodyELem.classList.remove("no-scroll");
-                    const postToChange = {
-                        title: updateTitle.value,
-                        text: updateText.value,
-                        tag: updateTag.value
-                    };
-                    console.log(postToChange);
-                    backdrop.innerHTML = "";
-                    await (0, _updateObject.updateObject)("posts", postToChange, idPost);
-                    mainListElem.innerHTML = "";
-                    for(let i = 0; i < page; i += 1)await (0, _getPostsApi.getPosts)(i + 1).then(async (posts)=>{
-                        mainListElem.insertAdjacentHTML("beforeend", await (0, _renderPostsMarkup.renderPosts)(posts, (0, _postHbsDefault.default)));
-                    });
-                }
+        const idPost = backdrop.id;
+        await (0, _getPost.getPost)(idPost).then(async (post)=>{
+            if (idPost === post.id) {
+                backdrop.classList.add("is-hidden");
+                bodyELem.classList.remove("no-scroll");
+                const postToChange = {
+                    name: post.nickname,
+                    email: post.email,
+                    avatar: post.avatar,
+                    password: post.password,
+                    createdAt: post.createdAt,
+                    title: updateTitle.value,
+                    text: updateText.value,
+                    tag: updateTag.value,
+                    comments: post.comments
+                };
+                console.log(postToChange);
+                backdrop.innerHTML = "";
+                await (0, _updateObject.updateObject)("posts", postToChange, idPost);
+                mainListElem.innerHTML = "";
+                for(let i = 0; i < page; i += 1)await (0, _getPostsApi.getPosts)(i + 1).then(async (posts)=>{
+                    mainListElem.insertAdjacentHTML("beforeend", await (0, _renderPostsMarkup.renderPosts)(posts, (0, _postHbsDefault.default)));
+                });
             }
         });
     }
@@ -1150,31 +1155,17 @@ const templateFunction = (0, _handlebarsDefault.default).template({
                     "column": 43
                 }
             }
-        }) : helper)) + "</p>\r\n          <p class=\"main-place\">" + alias4((helper = (helper = lookupProperty(helpers, "country") || (depth0 != null ? lookupProperty(depth0, "country") : depth0)) != null ? helper : alias2, typeof helper === alias3 ? helper.call(alias1, {
-            "name": "country",
-            "hash": {},
-            "data": data,
-            "loc": {
-                "start": {
-                    "line": 8,
-                    "column": 32
-                },
-                "end": {
-                    "line": 8,
-                    "column": 43
-                }
-            }
         }) : helper)) + "</p>\r\n        </div>\r\n      </div>\r\n      <div class=\"main-right\">\r\n        <p class=\"main-date\">" + alias4((helper = (helper = lookupProperty(helpers, "createdAt") || (depth0 != null ? lookupProperty(depth0, "createdAt") : depth0)) != null ? helper : alias2, typeof helper === alias3 ? helper.call(alias1, {
             "name": "createdAt",
             "hash": {},
             "data": data,
             "loc": {
                 "start": {
-                    "line": 12,
+                    "line": 11,
                     "column": 29
                 },
                 "end": {
-                    "line": 12,
+                    "line": 11,
                     "column": 42
                 }
             }
@@ -1184,11 +1175,11 @@ const templateFunction = (0, _handlebarsDefault.default).template({
             "data": data,
             "loc": {
                 "start": {
-                    "line": 13,
+                    "line": 12,
                     "column": 44
                 },
                 "end": {
-                    "line": 13,
+                    "line": 12,
                     "column": 55
                 }
             }
@@ -1198,11 +1189,11 @@ const templateFunction = (0, _handlebarsDefault.default).template({
             "data": data,
             "loc": {
                 "start": {
-                    "line": 19,
+                    "line": 18,
                     "column": 32
                 },
                 "end": {
-                    "line": 19,
+                    "line": 18,
                     "column": 41
                 }
             }
@@ -1212,11 +1203,11 @@ const templateFunction = (0, _handlebarsDefault.default).template({
             "data": data,
             "loc": {
                 "start": {
-                    "line": 20,
+                    "line": 19,
                     "column": 26
                 },
                 "end": {
-                    "line": 20,
+                    "line": 19,
                     "column": 33
                 }
             }
@@ -1226,11 +1217,11 @@ const templateFunction = (0, _handlebarsDefault.default).template({
             "data": data,
             "loc": {
                 "start": {
-                    "line": 22,
+                    "line": 21,
                     "column": 8
                 },
                 "end": {
-                    "line": 22,
+                    "line": 21,
                     "column": 16
                 }
             }
@@ -1257,7 +1248,7 @@ const templateFunction = (0, _handlebarsDefault.default).template({
                     "column": 0
                 },
                 "end": {
-                    "line": 33,
+                    "line": 32,
                     "column": 9
                 }
             }
