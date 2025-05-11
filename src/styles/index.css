@@ -183,11 +183,6 @@ body {
   color: var(--dark-bg-color);
 }
 
-.main-place {
-  font-size: 20px;
-  color: var(--dark-text-color);
-}
-
 .main-right {
   display: flex;
   gap: 32px;

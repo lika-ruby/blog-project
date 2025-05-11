@@ -191,34 +191,38 @@ backdrop.addEventListener("submit", async (e) => {
         const addTitle = document.querySelector("#add-title")
         const addText = document.querySelector("#add-text")
         const addTag = document.querySelector("#add-tag")
-        await getUsers().then(async (users) => {
-            for (const user of users) {
-                const idUser = getFromLocalStorage(keyIDProfile)
-                if (idUser === user.id) {
-                    backdrop.classList.add("is-hidden");
-                    bodyELem.classList.remove("no-scroll");
-                    backdrop.innerHTML = "";
-                    const post = {
-                        nickname: user.nickname,
-                        email: user.email,
-                        avatar: user.avatar,
-                        password: user.password,
-                        createdAt: new Date().toISOString(),
-                        title: addTitle.value,
-                        text: addText.value,
-                        tag: addTag.value,
-                        comments: []
-                    }
-                    await addObject("posts", post)
-                    mainListElem.innerHTML = ""
-                    for (let i = 0; i < page; i += 1) {
-                        await getPosts(i + 1).then(async (posts) => {
-                            mainListElem.insertAdjacentHTML("beforeend", await renderPosts(posts, postsListTemp))
-                        })
-                    }
-                }
+        const idUser = getFromLocalStorage(keyIDProfile)
+        console.log("1234567890")
 
+        await getUser(idUser).then(async (user) => {
+            console.log(user)
+            if (idUser === user.id) {
+                backdrop.classList.add("is-hidden");
+                bodyELem.classList.remove("no-scroll");
+                backdrop.innerHTML = "";
+                const post = {
+                    name: user.nickname,
+                    email: user.email,
+                    avatar: user.avatar,
+                    password: user.password,
+                    createdAt: new Date().toISOString(),
+                    title: addTitle.value,
+                    text: addText.value,
+                    tag: addTag.value,
+                    comments: []
+                }
+                console.log(post)
+
+                await addObject("posts", post)
+                mainListElem.innerHTML = ""
+                for (let i = 0; i < page; i += 1) {
+                    await getPosts(i + 1).then(async (posts) => {
+                        mainListElem.insertAdjacentHTML("beforeend", await renderPosts(posts, postsListTemp))
+                    })
+                }
             }
+
+
         })
     }
 })
@@ -253,32 +257,35 @@ backdrop.addEventListener("submit", async (e) => {
         const updateTitle = document.querySelector("#update-title")
         const updateText = document.querySelector("#update-text")
         const updateTag = document.querySelector("#update-tag")
-        for (let i = 0; i < page; i += 1) {
-            await getPosts(i + 1).then(async (posts) => {
-                for (const post of posts) {
-                    const idPost = backdrop.id
-                    if (idPost === post.id) {
-                        backdrop.classList.add("is-hidden");
-                        bodyELem.classList.remove("no-scroll");
-                        const postToChange = {
-                            title: updateTitle.value,
-                            text: updateText.value,
-                            tag: updateTag.value,
-                        }
-                        console.log(postToChange)
-                        backdrop.innerHTML = "";
-                        await updateObject("posts", postToChange, idPost)
-                        mainListElem.innerHTML = ""
-                        for (let i = 0; i < page; i += 1) {
-                            await getPosts(i + 1).then(async (posts) => {
-                                mainListElem.insertAdjacentHTML("beforeend", await renderPosts(posts, postsListTemp))
-                            })
-                        }
-                    }
+        const idPost = backdrop.id
 
+        await getPost(idPost).then(async (post) => {
+
+            if (idPost === post.id) {
+                backdrop.classList.add("is-hidden");
+                bodyELem.classList.remove("no-scroll");
+                const postToChange = {
+                    name: post.nickname,
+                    email: post.email,
+                    avatar: post.avatar,
+                    password: post.password,
+                    createdAt: post.createdAt,
+                    title: updateTitle.value,
+                    text: updateText.value,
+                    tag: updateTag.value,
+                    comments: post.comments
                 }
-            })
-        }
+                console.log(postToChange)
+                backdrop.innerHTML = "";
+                await updateObject("posts", postToChange, idPost)
+                mainListElem.innerHTML = ""
+                for (let i = 0; i < page; i += 1) {
+                    await getPosts(i + 1).then(async (posts) => {
+                        mainListElem.insertAdjacentHTML("beforeend", await renderPosts(posts, postsListTemp))
+                    })
+                }
+            }
+        })
     }
 })
 
